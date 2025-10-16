@@ -3,14 +3,17 @@ import Path from "@/components/Path";
 import ThreeStepProcess from "@/components/ThreeStepProcess";
 import WhyJVA from "@/components/WhyJVA";
 
+import banner from "../assets/334100-Real-estate-outlook-hero-1380x800px_.jpg"
+import banner2 from "../assets/Importance-of-Real-Estate-Market-Analysis-1024x683.jpg"
+
 export default function Home() {
   return (
     <>
       <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex flex-col items-center justify-center px-4 sm:px-8 lg:px-24 py-32 ">
       {/* Hero Section */}
-      <main className="flex flex-col lg:flex-row items-center lg:items-start text-center lg:text-left max-w-xl lg:max-w-5xl w-full gap-12">
+      <main className="relative flex flex-col lg:flex-row items-center lg:items-start text-center lg:text-left max-w-xl lg:max-w-5xl w-full gap-12">
         {/* Left Side (Text) */}
-        <div className="flex flex-col items-center lg:items-start w-full lg:w-1/2">
+        <div className="flex flex-col items-center lg:items-start w-full lg:w-1/2 z-10">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 lg:mb-4">
             Where Land Meets{" "}
             <span className="text-yellow-400">Capital & Vision</span>
@@ -35,17 +38,32 @@ export default function Home() {
             </a>
           </div>
         </div>
-        {/* Right Side (Optional Image for Desktop) */}
-        <div className="hidden lg:flex w-1/2 justify-center items-center">
-          {/* Replace with your own image if desired */}
-          <Image
-            src="/hero-real-estate.jpg"
-            alt="Real Estate Joint Venture"
-            width={400}
-            height={400}
-            className="rounded-xl shadow-lg object-cover"
-            priority
-          />
+        {/* Right Side (Overlapping Images for Desktop) */}
+        <div className="hidden lg:block w-1/2 relative min-h-[400px]">
+          {/* Background Image (blurred/dimmed) */}
+          <div className="absolute inset-0 rounded-xl overflow-hidden">
+            <Image
+              src={banner2}
+              alt="Real Estate Market Analysis"
+              fill
+              className="object-cover w-full h-full blur-[2px] opacity-70"
+              style={{ zIndex: 1 }}
+              priority
+            />
+          </div>
+          {/* Foreground Image (bottom right, on top) */}
+          <div className="absolute bottom-0 right-0 z-10 drop-shadow-2xl">
+            <Image
+              src={banner}
+              alt="Real Estate Joint Venture"
+              width={260}
+              height={180}
+              className="rounded-xl object-cover border-4 border-white"
+              priority
+            />
+          </div>
+          {/* Spacer for layout */}
+          <div className="w-full h-[400px]" />
         </div>
       </main>
     </div>
