@@ -36,7 +36,6 @@ export default function RootLayout({
       <body
         className={`${poppins.className} antialiased`}
       >
-        <AOSWrapper />
         <NavbarWrapper />
           {children}
         <FooterWrapper />
