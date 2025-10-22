@@ -72,7 +72,7 @@ const RoleCategory = () => {
           },
         }}
       >
-        {categories.map((category) => (
+        {categories.map((category, index) => (
           <motion.div
             key={category.id}
             variants={{
@@ -84,7 +84,7 @@ const RoleCategory = () => {
               boxShadow: "0px 10px 25px rgba(0,0,0,0.08)",
             }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => handleCategoryClick(category.id)}
+            onClick={handleCategoryClick}
             className="flex flex-col items-start border border-gray-200 rounded-xl p-6 cursor-pointer bg-white hover:border-yellow-500 hover:shadow-lg transition"
           >
             <div
