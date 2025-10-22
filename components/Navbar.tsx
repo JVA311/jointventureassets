@@ -36,7 +36,7 @@ export default function Navbar() {
           Login
         </Link>
         <Link
-          href="#get-started"
+          href="/register"
           className="bg-gray-900 hover:bg-yellow-400 text-white hover:text-gray-900 font-semibold px-5 py-2 rounded-lg transition-colors"
         >
           Get Started

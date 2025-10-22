@@ -1,4 +1,20 @@
+"use client"
+
 import { FiShield, FiTrendingUp, FiUsers, FiUserCheck } from "react-icons/fi";
+import { motion, Variants } from "framer-motion";
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: index * 0.3,
+      duration: 0.8,
+      ease: "easeOut",
+    },
+  }),
+};
 
 export default function WhyManageEverything() {
   return (
@@ -7,7 +23,12 @@ export default function WhyManageEverything() {
       <p className="text-gray-700 text-lg mb-10 text-center max-w-2xl">
         Joint Venture Assets acts as the trusted middle-party to ensure successful outcomes
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-5xl mb-12">
+      <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-5xl mb-12"
+        variants={cardVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+      >
         {/* Legal Protection */}
         <div className="flex flex-col items-center text-center">
           <div className="bg-yellow-500 rounded-full p-4 mb-4">
@@ -48,7 +69,7 @@ export default function WhyManageEverything() {
             Specialized expertise in individual, group, cooperative, and government projects
           </p>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

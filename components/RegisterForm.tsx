@@ -41,20 +41,28 @@ const inputFocusVariants = {
   },
 } as const;
 
-export default function Login() {
+interface RegisterFormProps {
+  role?: string;
+}
+
+export default function RegisterForm({ role = "Mandate" }: RegisterFormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState({
+    fullName: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login submitted:", formData);
-    // Handle login logic here
+    console.log("Form submitted:", formData);
+    // Handle registration logic here
+    // After successful registration, redirect to dashboard or home
     router.push("/");
   };
 
@@ -113,7 +121,7 @@ export default function Login() {
               delay: 0.1,
             }}
           >
-            Welcome Back
+            Create Account
           </motion.h1>
           <motion.p
             className="text-gray-600 text-sm"
@@ -121,7 +129,8 @@ export default function Login() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            Sign in to your account
+            Registering as a{" "}
+            <span className="font-semibold text-gray-900">{role}</span>
           </motion.p>
         </motion.div>
 
@@ -133,6 +142,33 @@ export default function Login() {
           transition={{ duration: 0.3 }}
         >
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Full Name Field */}
+            <motion.div variants={itemVariants}>
+              <label
+                htmlFor="fullName"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Full Name
+              </label>
+              <motion.div
+                animate={focusedField === "fullName" ? "focus" : "blur"}
+                variants={inputFocusVariants}
+              >
+                <input
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField("fullName")}
+                  onBlur={() => setFocusedField(null)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                  placeholder=""
+                  required
+                />
+              </motion.div>
+            </motion.div>
+
             {/* Email Field */}
             <motion.div variants={itemVariants}>
               <label
@@ -197,14 +233,45 @@ export default function Login() {
               </motion.div>
             </motion.div>
 
-            {/* Forgot Password Link */}
-            <motion.div variants={itemVariants} className="flex justify-end">
-              <Link
-                href="/forgot-password"
-                className="text-sm text-yellow-600 hover:text-yellow-700 font-medium hover:underline"
+            {/* Confirm Password Field */}
+            <motion.div variants={itemVariants}>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Forgot password?
-              </Link>
+                Confirm Password
+              </label>
+              <motion.div
+                className="relative"
+                animate={focusedField === "confirmPassword" ? "focus" : "blur"}
+                variants={inputFocusVariants}
+              >
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField("confirmPassword")}
+                  onBlur={() => setFocusedField(null)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none pr-12"
+                  placeholder=""
+                  required
+                />
+                <motion.button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-black hover:text-yellow-500"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  {showConfirmPassword ? (
+                    <FiEyeOff size={20} />
+                  ) : (
+                    <FiEye size={20} />
+                  )}
+                </motion.button>
+              </motion.div>
             </motion.div>
 
             {/* Submit Button */}
@@ -227,7 +294,7 @@ export default function Login() {
                   whileHover={{ x: 0 }}
                   transition={{ duration: 0.3 }}
                 />
-                <span className="relative z-10">Sign In</span>
+                <span className="relative z-10">Create Account</span>
                 <motion.span
                   className="relative z-10"
                   animate={{ x: [0, 5, 0] }}
@@ -243,7 +310,7 @@ export default function Login() {
             </motion.div>
           </form>
 
-          {/* Sign Up Link */}
+          {/* Sign In Link */}
           <motion.div
             variants={itemVariants}
             className="text-center mt-6"
@@ -252,12 +319,12 @@ export default function Login() {
             transition={{ delay: 0.8 }}
           >
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link
-                href="/register"
+                href="/login"
                 className="text-yellow-600 hover:text-yellow-700 font-medium hover:underline"
               >
-                Get Started
+                Sign In
               </Link>
             </p>
           </motion.div>

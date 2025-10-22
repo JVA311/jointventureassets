@@ -7,7 +7,7 @@ import ThreeStepProcess from "@/components/ThreeStepProcess";
 import WhyJVA from "@/components/WhyJVA";
 import { motion } from "framer-motion";
 
-import banner2 from "../assets/Importance-of-Real-Estate-Market-Analysis-1024x683.jpg";
+import banner2 from "../assets/IMG-20251018-WA0010.jpg";
 import { useState } from "react";
 
 export default function Home() {
@@ -27,7 +27,7 @@ export default function Home() {
             src={banner2}
             alt="Hero background"
             fill
-            className="object-cover w-full h-full scale-105"
+            className="object-cover w-full h-full"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/30" />
@@ -81,12 +81,12 @@ export default function Home() {
 
           {/* Sell / Rent Toggle: full width on mobile, auto width on desktop */}
           <div className="flex items-center justify-between bg-gray-100 rounded-full p-1 w-full md:w-auto shrink-0">
-            {['Sell', 'Rent'].map((type) => (
+            {['Land', 'Develop'].map((type) => (
               <button
                 key={type}
                 onClick={() => setListingType(type)}
                 className={`
-                  flex-1 md:flex-none px-4 py-2 rounded-full font-semibold text-sm transition-all duration-200 whitespace-nowrap
+                  flex-1 md:flex-none px-4 py-2 rounded-full font-semibold text-sm transition-all duration-200 whitespace-nowrap hover:cursor-pointer
                   ${listingType === type
                     ? 'bg-yellow-500 text-gray-900 shadow-md'
                     : 'text-gray-700 hover:bg-white/70'
@@ -120,7 +120,7 @@ export default function Home() {
 
           {/* Search Button: full width on mobile, auto width on desktop, attention grabbing */}
           <button
-            className="bg-yellow-500 text-gray-900 px-6 py-3 rounded-full text-sm font-bold hover:bg-yellow-600 transition-all shadow-lg hover:shadow-xl w-full md:w-auto shrink-0"
+            className="bg-yellow-500 text-gray-900 px-6 py-3 rounded-full text-sm font-bold hover:bg-yellow-600 transition-all shadow-lg hover:shadow-xl w-full md:w-auto shrink-0 hover:cursor-pointer"
           >
             Search
           </button>
