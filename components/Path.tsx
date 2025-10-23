@@ -32,7 +32,7 @@ export default function Path() {
         "Retain ownership while building",
         "Professional project management",
       ],
-      link: "#landowner",
+      link: "register?role=landowner",
       linkText: "Join as Landowner →",
     },
     {
@@ -48,7 +48,7 @@ export default function Path() {
         "Form or join investor groups",
         "Streamlined partnership process",
       ],
-      link: "#investor",
+      link: "register?role=investor-developer",
       linkText: "Join as Investor →",
     },
     {
@@ -64,7 +64,7 @@ export default function Path() {
         "Competitive commission structure",
         "Professional support system",
       ],
-      link: "#mandate",
+      link: "register?role=mandate",
       linkText: "Join as Mandate →",
     },
   ];
