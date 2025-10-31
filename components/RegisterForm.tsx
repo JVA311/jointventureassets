@@ -108,7 +108,7 @@ export default function RegisterForm({ role = "Mandate", category = "" }: Regist
       role: role,
       category: category,
     });
-  }, [role, category, formData]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center px-6 py-12 relative overflow-hidden">
