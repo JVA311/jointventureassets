@@ -9,6 +9,7 @@ import LandownerFields from "./LandownerFields";
 import InvestorFields from "./InvestorFields";
 import MandateFields from "./MandateFields";
 import { Spinner } from "./Spinner";
+import { useAppSelector } from "@/hooks/hooks";
 
 // Animation variants
 const containerVariants = {
@@ -80,6 +81,7 @@ export default function CompleteProfileForm({
   });
 
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const userId = useAppSelector((state) => state.auth.user?.id);
 
   const handleTextAreaChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -95,7 +97,7 @@ export default function CompleteProfileForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const userId = localStorage.getItem("userId")
+
     console.log("Profile completion submitted:", formData);
     try {
       setLoading(true);
