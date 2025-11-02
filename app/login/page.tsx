@@ -73,6 +73,12 @@ export default function Login() {
       dispatch(
         setCredentials({ user: response.data.user, token: response.data.token })
       );
+
+      // Clear error message after 5 seconds
+      setTimeout(() => {
+        setSuccessMsg("");
+      }, 5000);
+
       router.push("/dashboard");
     } catch (error: unknown) {
       console.error("Login failed:", error);
@@ -81,6 +87,11 @@ export default function Login() {
       } else {
         setError("Something went wrong. Please try again.");
       }
+
+      // Clear error message after 5 seconds
+      setTimeout(() => {
+        setError("");
+      }, 5000);
     } finally {
       setLoading(false);
     }
