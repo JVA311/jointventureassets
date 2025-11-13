@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
 import { logout } from "@/store/authSlice";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { isTokenExpired } from "@/utils/decodeToken";
 
@@ -16,6 +16,7 @@ export default function Navbar() {
   const { user, isAuthenticated, token } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = () => {
     dispatch(logout());
@@ -26,7 +27,7 @@ export default function Navbar() {
   useEffect(() => {
     if (!token || isTokenExpired(token)) {
       dispatch(logout());
-      router.push("/login");
+      // router.push("/login");
     }
   }, [token])
 
@@ -43,18 +44,30 @@ export default function Navbar() {
       </div>
       {/* Centered Navigation Links */}
       <div className="hidden md:flex flex-1 justify-center items-center gap-10">
-        <Link href="/" className="text-gray-700 hover:text-yellow-500 font-medium transition-colors">
+        <Link 
+          href="/" 
+          className={`${pathname === '/' ? 'text-yellow-500' : 'text-gray-700'} hover:text-yellow-500 font-medium transition-colors`}
+        >
           Home
         </Link>
-        <Link href="/how-it-works" className="text-gray-700 hover:text-yellow-500 font-medium transition-colors">
+        <Link 
+          href="/how-it-works" 
+          className={`${pathname === '/how-it-works' ? 'text-yellow-500' : 'text-gray-700'} hover:text-yellow-500 font-medium transition-colors`}
+        >
           How It Works
         </Link>
         {isAuthenticated && (
-          <Link href="/browse-requests" className="text-gray-700 hover:text-yellow-500 font-medium transition-colors">
+          <Link 
+            href="/browse-requests" 
+            className={`${pathname === '/browse-requests' ? 'text-yellow-500' : 'text-gray-700'} hover:text-yellow-500 font-medium transition-colors`}
+          >
             Browse Requests
           </Link>
         )}
-        <Link href="/contact" className="text-gray-700 hover:text-yellow-500 font-medium transition-colors">
+        <Link 
+          href="/contact" 
+          className={`${pathname === '/contact' ? 'text-yellow-500' : 'text-gray-700'} hover:text-yellow-500 font-medium transition-colors`}
+        >
           Contact
         </Link>
       </div>
@@ -101,7 +114,10 @@ export default function Navbar() {
           </div>
         ) : (
           <>
-            <Link href="/login" className="text-gray-700 hover:text-yellow-500 font-medium transition-colors">
+            <Link 
+              href="/login" 
+              className={`${pathname === '/login' ? 'text-yellow-500' : 'text-gray-700'} hover:text-yellow-500 font-medium transition-colors`}
+            >
               Login
             </Link>
             <Link

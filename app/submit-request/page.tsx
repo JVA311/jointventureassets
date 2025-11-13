@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { FiArrowRight, FiUpload, FiX } from "react-icons/fi";
 import { useState } from "react";
 import Link from "next/link";
+import axios from "axios"
+import { useAppSelector } from "@/hooks/hooks";
+import { Spinner } from "@/components/Spinner";
 
 // Animation variants
 const containerVariants = {
@@ -42,9 +45,9 @@ const inputFocusVariants = {
 
 export default function SubmitRequestPage() {
   interface FormData {
-    name: string;
+    fullName: string;
     email: string;
-    phone: string;
+    phoneNumber: string;
     requestType: "land" | "development" | "partnership" | "other";
     location: string;
     budget: string;
@@ -54,9 +57,9 @@ export default function SubmitRequestPage() {
   }
 
   const [formData, setFormData] = useState<FormData>({
-    name: "",
+    fullName: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     requestType: "land",
     location: "",
     budget: "",
@@ -67,6 +70,7 @@ export default function SubmitRequestPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const token = useAppSelector(state => state.auth.token)
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const handleChange = (
@@ -101,16 +105,37 @@ export default function SubmitRequestPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    
+    const submitData = new FormData();
+
+    // Append text fields
+    submitData.append("fullName", formData.fullName);
+    submitData.append("email", formData.email);
+    submitData.append("phoneNumber", formData.phoneNumber);
+    submitData.append("requestType", formData.requestType);
+    submitData.append("location", formData.location);
+    submitData.append("budget", formData.budget);
+    submitData.append("timeline", formData.timeline);
+    submitData.append("description", formData.description);
+
+    formData.files.forEach((file) => {
+      submitData.append("documents", file); 
+    });
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setSubmitSuccess(true);
+      setIsSubmitting(true)
+      setSubmitSuccess(false)
+      await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/request/create`, submitData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      })
+      setIsSubmitting(false)
+      setSubmitSuccess(true)
     } catch (error) {
-      console.error("Submission failed:", error);
-    } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
+      setSubmitSuccess(false)
+      console.log(error)
     }
   };
 
@@ -203,11 +228,11 @@ export default function SubmitRequestPage() {
                     >
                       <input
                         type="text"
-                        name="name"
+                        name="fullName"
                         required
-                        value={formData.name}
+                        value={formData.fullName}
                         onChange={handleChange}
-                        onFocus={() => setFocusedField("name")}
+                        onFocus={() => setFocusedField("fullName")}
                         onBlur={() => setFocusedField(null)}
                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
                         placeholder="John Doe"
@@ -251,10 +276,10 @@ export default function SubmitRequestPage() {
                   >
                     <input
                       type="tel"
-                      name="phone"
-                      value={formData.phone}
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
                       onChange={handleChange}
-                      onFocus={() => setFocusedField("phone")}
+                      onFocus={() => setFocusedField("phoneNumber")}
                       onBlur={() => setFocusedField(null)}
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
                       placeholder="+1 (555) 000-0000"
@@ -400,6 +425,7 @@ export default function SubmitRequestPage() {
                           <span>Upload files</span>
                           <input
                             id="file-upload"
+                            name="document"
                             type="file"
                             multiple
                             className="sr-only"
@@ -448,32 +474,12 @@ export default function SubmitRequestPage() {
                     type="submit"
                     disabled={isSubmitting}
                     className={`w-full flex items-center justify-center px-6 py-4 border border-transparent rounded-xl text-base font-medium text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors duration-200 ${
-                      isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                      isSubmitting ? "opacity-70 cursor-not-allowed bg-gray-800" : ""
                     }`}
                   >
                     {isSubmitting ? (
                       <span className="flex items-center">
-                        <svg
-                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                        Processing...
+                        <Spinner />
                       </span>
                     ) : (
                       <span className="flex items-center">

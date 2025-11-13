@@ -1,15 +1,31 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { FiPlus, FiTrendingUp, FiMessageSquare, FiEye } from "react-icons/fi"
+import { FiPlus, FiTrendingUp, FiMessageSquare, FiEye, FiClock, FiCheckCircle, FiXCircle } from "react-icons/fi"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import StatCard from "@/components/dashboard/StatCard"
 import SectionCard from "@/components/dashboard/SectionCard"
 import EmptyState from "@/components/dashboard/EmptyState"
+import RequestList from "@/components/dashboard/RequestList"
 import QuickActions from "@/components/dashboard/QuickActions"
+import axios from "axios"
+
+interface UserStats {
+  totalRequest: number
+  matched: number
+  availableMatches: number
+}
+
+interface Request {
+  _id: string
+  title: string
+  description: string
+  status: 'pending' | 'accepted' | 'rejected'
+  createdAt: string
+}
 
 // Animation variants
 const containerVariants = {
@@ -37,26 +53,70 @@ const headerVariants = {
 }
 
 export default function Dashboard() {
+  const [ currentUser, setCurrentUser ] = useState<UserStats>()
+  const [ requests, setRequests ] = useState<Request[]>([])
+  const [ isLoading, setIsLoading ] = useState(false)
   const router = useRouter()
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth)
+  const { user, isAuthenticated, token } = useSelector((state: RootState) => state.auth)
+
+  // Fetch user requests
+  const fetchRequests = async () => {
+    console.log("fetching....")
+    try {
+      setIsLoading(true)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/request/getUserRequests`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      console.log(response.data.data)
+      setRequests(response.data.data)
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false)
+      console.error('Error fetching requests:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // fetchRequests()
 
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/login")
+      return
     }
-  }, [isAuthenticated, router])
+    
+    const getUser = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${user?.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        setCurrentUser(response.data.user)
+      } catch(error) {
+        console.log(error)
+      }
+    }
+
+    if (isAuthenticated && user) {
+      getUser()
+      fetchRequests()
+    }
+  }, [isAuthenticated, router, token, user])
 
   if (!isAuthenticated || !user) {
     return null
   }
 
-  // Mock data - replace with actual data from API
   const stats = {
-    myRequests: 0,
-    active: 0,
-    matched: 0,
-    availableMatches: 0,
+    myRequests: currentUser?.totalRequest || 0,
+    active: currentUser?.matched || 0,
+    matched: currentUser?.matched,
+    availableMatches: currentUser?.availableMatches || 0,
   }
 
   return (
@@ -132,14 +192,14 @@ export default function Dashboard() {
             iconColor="text-green-600"
             delay={0.2}
           />
-          <StatCard
+          {/* <StatCard
             icon={<FiMessageSquare size={24} />}
             label="Matched"
             value={stats.matched}
             bgColor="bg-blue-100"
             iconColor="text-blue-600"
             delay={0.3}
-          />
+          /> */}
           <StatCard
             icon={<FiEye size={24} />}
             label="Available Matches"
@@ -161,15 +221,26 @@ export default function Dashboard() {
             }}
             delay={0.5}
           >
-            <EmptyState
-              icon={<FiPlus size={64} />}
-              title="No requests yet"
-              description="Create your first request to get matched with partners"
-              action={{
-                label: "Create Request",
-                onClick: () => router.push("/submit-request"),
-              }}
-            />
+            {isLoading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+              </div>
+            ) : requests.length > 0 ? (
+              <RequestList 
+                requests={requests}
+                onViewDetails={(id) => router.push(`/requests/${id}`)}
+              />
+            ) : (
+              <EmptyState
+                icon={<FiPlus size={64} />}
+                title="No requests yet"
+                description="Create your first request to get matched with partners"
+                action={{
+                  label: "Create Request",
+                  onClick: () => router.push("/submit-request"),
+                }}
+              />
+            )}
           </SectionCard>
 
           {/* Available Opportunities Section */}
