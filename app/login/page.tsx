@@ -10,6 +10,7 @@ import { setCredentials } from "@/store/authSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { Spinner } from "@/components/Spinner";
+import { signInWithGoogle } from "@/utils/oauth";
 
 // Animation variants
 const containerVariants = {
@@ -70,11 +71,11 @@ export default function Login() {
       );
       setSuccessMsg(response.data.message);
       console.log("Login successful:", response.data);
+
       dispatch(
         setCredentials({ user: response.data.user, token: response.data.token })
       );
 
-      // Clear error message after 5 seconds
       setTimeout(() => {
         setSuccessMsg("");
       }, 5000);
@@ -88,7 +89,6 @@ export default function Login() {
         setError("Something went wrong. Please try again.");
       }
 
-      // Clear error message after 5 seconds
       setTimeout(() => {
         setError("");
       }, 5000);
@@ -97,11 +97,44 @@ export default function Login() {
     }
   };
 
+  const handleOAuth = async () => {
+    try {
+      setLoading(true)
+      setSuccessMsg("")
+      const { accessToken } = await signInWithGoogle()
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`, {
+        googleToken: accessToken
+      })
+      setLoading(false)
+      dispatch(
+        setCredentials({ user: response.data.user, token: response.data.token })
+      );
+
+      router.push("/dashboard");
+      // console.log(resonse.data)
+    } catch (error: unknown) {
+      setLoading(false)
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Something went wrong. Please try again.");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  // Google Sign-In Handler
+  const handleGoogleLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`;
   };
 
   return (
@@ -142,9 +175,7 @@ export default function Login() {
         {/* Header */}
         <motion.div variants={itemVariants} className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome back</h2>
-          <p className="text-gray-600 mb-2">
-            Sign in to your account to continue
-          </p>
+          <p className="text-gray-600 mb-2">Sign in to your account to continue</p>
         </motion.div>
 
         {/* Form Card */}
@@ -159,10 +190,7 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <motion.div variants={itemVariants}>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
               </label>
               <motion.div
@@ -178,7 +206,6 @@ export default function Login() {
                   onFocus={() => setFocusedField("email")}
                   onBlur={() => setFocusedField(null)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
-                  placeholder=""
                   required
                 />
               </motion.div>
@@ -186,10 +213,7 @@ export default function Login() {
 
             {/* Password Field */}
             <motion.div variants={itemVariants}>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
               <motion.div
@@ -206,7 +230,6 @@ export default function Login() {
                   onFocus={() => setFocusedField("password")}
                   onBlur={() => setFocusedField(null)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none pr-12"
-                  placeholder=""
                   required
                 />
                 <motion.button
@@ -216,71 +239,54 @@ export default function Login() {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  {showPassword ? (
-                    <FiEyeOff size={20} />
-                  ) : (
-                    <FiEye size={20} />
-                  )}
+                  {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
                 </motion.button>
               </motion.div>
             </motion.div>
-
 
             {/* Forgot Password Link */}
             <motion.div variants={itemVariants} className="flex justify-end">
               <Link
                 href="/forgot-password"
                 className="text-sm text-yellow-600 hover:text-yellow-700 font-medium hover:underline"
-                >
+              >
                 Forgot password?
               </Link>
             </motion.div>
 
-                {(error || successMsg) && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className={`${
-                      error
-                        ? "bg-red-50 border-2 border-red-300 text-red-800"
-                        : "bg-green-50 border-2 border-green-300 text-green-800"
-                    } px-5 py-4 rounded-xl text-sm font-medium shadow-sm`}
-                  >
-                    <div className="flex justify-center items-center gap-3">
-                      <span className="flex-1 text-xl">{error || successMsg}</span>
-                    </div>
-                  </motion.div>
-                )}
+            {(error || successMsg) && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className={`${
+                  error
+                    ? "bg-red-50 border-2 border-red-300 text-red-800"
+                    : "bg-green-50 border-2 border-green-300 text-green-800"
+                } px-5 py-4 rounded-xl text-sm font-medium shadow-sm`}
+              >
+                <div className="flex justify-center items-center gap-3">
+                  <span className="flex-1 text-xl">{error || successMsg}</span>
+                </div>
+              </motion.div>
+            )}
+
             {/* Submit Button */}
             <motion.div variants={itemVariants}>
               <motion.button
                 type="submit"
                 className={`w-full py-3 px-6 rounded-lg font-semibold flex items-center justify-center gap-2 group overflow-hidden relative transition-colors duration-300 ${
-                  loading 
-                    ? 'bg-gray-800 text-white cursor-wait' 
-                    : 'bg-yellow-500 text-gray-900 hover:cursor-pointer'
+                  loading
+                    ? "bg-gray-800 text-white cursor-wait"
+                    : "bg-yellow-500 text-gray-900 hover:cursor-pointer"
                 }`}
                 whileHover={{
                   scale: 1.02,
                   boxShadow: "0 10px 25px -5px rgba(234, 179, 8, 0.5)",
                 }}
                 whileTap={{ scale: 0.98 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
               >
-                <motion.span
-                  className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-600"
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-                {loading ? (
-                  <span className="relative z-10 flex items-center gap-2">
-                    <Spinner />
-                  </span>
-                ) : (
+                {!loading ? (
                   <>
                     <span className="relative z-10">Sign In</span>
                     <motion.span
@@ -295,10 +301,39 @@ export default function Login() {
                       <FiArrowRight size={20} />
                     </motion.span>
                   </>
+                ) : (
+                  <span className="relative z-10 flex items-center gap-2">
+                    <Spinner />
+                  </span>
                 )}
               </motion.button>
             </motion.div>
           </form>
+
+          {/* Google Sign In */}
+          <motion.div
+            variants={itemVariants}
+            className="mt-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.75 }}
+          >
+            <motion.button
+              onClick={handleOAuth}
+              className="w-full flex items-center justify-center gap-3 py-3 px-6 border border-gray-300 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-all cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <img
+                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                alt="Google"
+                className="w-5 h-5"
+              />
+              <span className="text-gray-700 font-medium">
+                Continue with Google
+              </span>
+            </motion.button>
+          </motion.div>
 
           {/* Sign Up Link */}
           <motion.div

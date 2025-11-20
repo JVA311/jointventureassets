@@ -12,6 +12,7 @@ import {
 } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSearchRequests } from "@/hooks/useSearchRequests";
+import { Spinner } from "@/components/Spinner";
 
 export default function BrowseRequests() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,7 +58,7 @@ export default function BrowseRequests() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+        <Spinner />
       </div>
     );
   }
@@ -106,7 +107,7 @@ export default function BrowseRequests() {
             </div>
           )}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="relative flex-1">
+            {/* <div className="relative flex-1">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FiSearch className="text-gray-400" />
               </div>
@@ -117,7 +118,7 @@ export default function BrowseRequests() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-            </div>
+            </div> */}
 
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -157,7 +158,7 @@ export default function BrowseRequests() {
                   </div>
 
                   <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
-                    {request.requestType}
+                    {request.title}
                   </h3>
 
                   <p className="text-gray-600 mb-4 line-clamp-3">

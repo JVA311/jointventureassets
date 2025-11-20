@@ -69,7 +69,6 @@ export default function Dashboard() {
           Authorization: `Bearer ${token}`
         }
       })
-      console.log(response.data.data)
       setRequests(response.data.data)
       setIsLoading(false)
     } catch (error) {

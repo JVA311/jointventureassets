@@ -4,6 +4,7 @@ import { useAppSelector } from "@/hooks/hooks";
 
 interface RequestItem {
   _id: string;
+  title: string;
   userId: string;
   fullName: string;
   email: string;

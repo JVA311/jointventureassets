@@ -380,6 +380,31 @@ export default function RegisterForm({ role = "Mandate", category = "" }: Regist
             </motion.div>
           </form>
 
+          {/* Google Sign In */}
+          <motion.div
+            variants={itemVariants}
+            className="mt-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.75 }}
+          >
+            <motion.button
+              // onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center gap-3 py-3 px-6 border border-gray-300 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-all cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <img
+                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                alt="Google"
+                className="w-5 h-5"
+              />
+              <span className="text-gray-700 font-medium">
+                Continue with Google
+              </span>
+            </motion.button>
+          </motion.div>
+
           {/* Sign In Link */}
           <motion.div
             variants={itemVariants}

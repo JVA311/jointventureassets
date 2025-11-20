@@ -48,11 +48,19 @@ export default function SubmitRequestPage() {
     fullName: string;
     email: string;
     phoneNumber: string;
-    requestType: "land" | "development" | "partnership" | "other";
+    requestType: "land" | "development" | "partnership" ;
     location: string;
     budget: string;
     timeline: string;
     description: string;
+    title: string;
+    developmentType: string;
+    partnershipType: string;
+    landSize: string;
+    landValue: string;
+    housingProposal: string;
+    titleDocument: string;
+    sharingFormula: string;
     files: File[];
   }
 
@@ -65,11 +73,20 @@ export default function SubmitRequestPage() {
     budget: "",
     timeline: "",
     description: "",
+    title: "",
+    developmentType: "",
+    partnershipType: "",
+    landSize: "",
+    landValue: "",
+    housingProposal: "",
+    titleDocument: "",
+    sharingFormula: "",
     files: [],
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [error, setError] = useState("")
   const token = useAppSelector(state => state.auth.token)
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
@@ -117,6 +134,23 @@ export default function SubmitRequestPage() {
     submitData.append("budget", formData.budget);
     submitData.append("timeline", formData.timeline);
     submitData.append("description", formData.description);
+    submitData.append("title", formData.title);
+
+    if (formData.requestType === "land") {
+      submitData.append("landSize", formData.landSize);
+      submitData.append("landValue", formData.landValue);
+      submitData.append("housingProposal", formData.housingProposal);
+      submitData.append("titleDocument", formData.titleDocument);
+      submitData.append("sharingFormula", formData.sharingFormula);
+    }
+
+    if (formData.requestType === "development") {
+      submitData.append("developmentType", formData.developmentType);
+    }
+
+    if (formData.requestType === "partnership") {
+      submitData.append("partnershipType", formData.partnershipType);
+    }
 
     formData.files.forEach((file) => {
       submitData.append("documents", file); 
@@ -132,10 +166,22 @@ export default function SubmitRequestPage() {
       })
       setIsSubmitting(false)
       setSubmitSuccess(true)
-    } catch (error) {
+    } catch (error: unknown) {
       setIsSubmitting(false)
-      setSubmitSuccess(false)
+      setIsSubmitting(false)
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Something went wrong. Please try again.")
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+
+      setTimeout(() => {
+        setError("")
+      }, 5000)
+      
       console.log(error)
+    } finally {
+      setIsSubmitting(false)
     }
   };
 
@@ -235,7 +281,7 @@ export default function SubmitRequestPage() {
                         onFocus={() => setFocusedField("fullName")}
                         onBlur={() => setFocusedField(null)}
                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
-                        placeholder="John Doe"
+                        placeholder="Emeka john"
                       />
                     </motion.div>
                   </div>
@@ -282,7 +328,7 @@ export default function SubmitRequestPage() {
                       onFocus={() => setFocusedField("phoneNumber")}
                       onBlur={() => setFocusedField(null)}
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
-                      placeholder="+1 (555) 000-0000"
+                      placeholder="+234 2547 000 0000"
                     />
                   </motion.div>
                 </motion.div>
@@ -309,7 +355,7 @@ export default function SubmitRequestPage() {
                         onFocus={() => setFocusedField("location")}
                         onBlur={() => setFocusedField(null)}
                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
-                        placeholder="e.g. Lagos, Nigeria"
+                        placeholder="No 1, example street, area"
                       />
                     </motion.div>
                   </div>
@@ -331,7 +377,7 @@ export default function SubmitRequestPage() {
                         onFocus={() => setFocusedField("budget")}
                         onBlur={() => setFocusedField(null)}
                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
-                        placeholder="e.g. $50,000"
+                        placeholder="e.g. ₦500,000,000"
                       />
                     </motion.div>
                   </div>
@@ -359,6 +405,29 @@ export default function SubmitRequestPage() {
                   </div>
                 </motion.div>
 
+                {/* Title */}
+                <motion.div variants={itemVariants}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Title
+                  </label>
+                  <motion.div
+                    variants={inputFocusVariants}
+                    animate={focusedField === "title" ? "focus" : "blur"}
+                    className="relative"
+                  >
+                    <input
+                      type="text"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleChange}
+                      onFocus={() => setFocusedField("title")}
+                      onBlur={() => setFocusedField(null)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
+                      placeholder="e.g. 3 Bedroom Duplex JV in Lekki"
+                    />
+                  </motion.div>
+                </motion.div>
+
                 {/* Request Type */}
                 <motion.div variants={itemVariants}>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -380,10 +449,195 @@ export default function SubmitRequestPage() {
                       <option value="land">Land</option>
                       <option value="development">Development</option>
                       <option value="partnership">Partnership</option>
-                      <option value="other">Other</option>
                     </select>
                   </motion.div>
                 </motion.div>
+
+                {formData.requestType === "development" && (
+                  <motion.div variants={itemVariants}>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Development Type
+                    </label>
+                    <motion.div
+                      variants={inputFocusVariants}
+                      animate={focusedField === "developmentType" ? "focus" : "blur"}
+                      className="relative"
+                    >
+                      <select
+                        name="developmentType"
+                        value={formData.developmentType}
+                        onChange={handleChange}
+                        onFocus={() => setFocusedField("developmentType")}
+                        onBlur={() => setFocusedField(null)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
+                      >
+                        <option value="">Select development type</option>
+                        <option value="residential">Residential</option>
+                        <option value="commercial">Commercial</option>
+                        <option value="industrial">Industrial</option>
+                        <option value="agricultural">Agricultural</option>
+                      </select>
+                    </motion.div>
+                  </motion.div>
+                )}
+
+                {formData.requestType === "partnership" && (
+                  <motion.div variants={itemVariants}>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Partnership Type
+                    </label>
+                    <motion.div
+                      variants={inputFocusVariants}
+                      animate={focusedField === "partnershipType" ? "focus" : "blur"}
+                      className="relative"
+                    >
+                      <select
+                        name="partnershipType"
+                        value={formData.partnershipType}
+                        onChange={handleChange}
+                        onFocus={() => setFocusedField("partnershipType")}
+                        onBlur={() => setFocusedField(null)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
+                      >
+                        <option value="">Select partnership type</option>
+                        <option value="mandate">Mandate</option>
+                        <option value="lawyer">Lawyer</option>
+                        <option value="property_consultant">Property Consultant</option>
+                        <option value="building_expert">Building Expert</option>
+                      </select>
+                    </motion.div>
+                  </motion.div>
+                )}
+
+                {formData.requestType === "land" && (
+                  <motion.div
+                    variants={itemVariants}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  >
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Land Size
+                      </label>
+                      <motion.div
+                        variants={inputFocusVariants}
+                        animate={focusedField === "landSize" ? "focus" : "blur"}
+                        className="relative"
+                      >
+                        <input
+                          type="text"
+                          name="landSize"
+                          value={formData.landSize}
+                          onChange={handleChange}
+                          onFocus={() => setFocusedField("landSize")}
+                          onBlur={() => setFocusedField(null)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
+                          placeholder="e.g. 500 sqm"
+                        />
+                      </motion.div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Land Value
+                      </label>
+                      <motion.div
+                        variants={inputFocusVariants}
+                        animate={focusedField === "landValue" ? "focus" : "blur"}
+                        className="relative"
+                      >
+                        <input
+                          type="text"
+                          name="landValue"
+                          value={formData.landValue}
+                          onChange={handleChange}
+                          onFocus={() => setFocusedField("landValue")}
+                          onBlur={() => setFocusedField(null)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
+                          placeholder="e.g. ₦100,000,000"
+                        />
+                      </motion.div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Housing Proposal
+                      </label>
+                      <motion.div
+                        variants={inputFocusVariants}
+                        animate={focusedField === "housingProposal" ? "focus" : "blur"}
+                        className="relative"
+                      >
+                        <select
+                          name="housingProposal"
+                          value={formData.housingProposal}
+                          onChange={handleChange}
+                          onFocus={() => setFocusedField("housingProposal")}
+                          onBlur={() => setFocusedField(null)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
+                        >
+                          <option value="">Select proposal</option>
+                          <option value="apartment">Apartment</option>
+                          <option value="duplex">Duplex</option>
+                          <option value="maisonette">Maisonette</option>
+                          <option value="bungalows">Bungalows</option>
+                          <option value="condos">Condos</option>
+                        </select>
+                      </motion.div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Title Document
+                      </label>
+                      <motion.div
+                        variants={inputFocusVariants}
+                        animate={focusedField === "titleDocument" ? "focus" : "blur"}
+                        className="relative"
+                      >
+                        <select
+                          name="titleDocument"
+                          value={formData.titleDocument}
+                          onChange={handleChange}
+                          onFocus={() => setFocusedField("titleDocument")}
+                          onBlur={() => setFocusedField(null)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
+                        >
+                          <option value="">Select document type</option>
+                          <option value="c_of_o">C of O</option>
+                          <option value="governors_consent">Governor's Consent</option>
+                          <option value="deed_of_assignment">Deed</option>
+                          <option value="excision">Excision</option>
+                          <option value="gazzette">Gazzette</option>
+                        </select>
+                      </motion.div>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Sharing Formula
+                      </label>
+                      <motion.div
+                        variants={inputFocusVariants}
+                        animate={focusedField === "sharingFormula" ? "focus" : "blur"}
+                        className="relative"
+                      >
+                        <select
+                          name="sharingFormula"
+                          value={formData.sharingFormula}
+                          onChange={handleChange}
+                          onFocus={() => setFocusedField("sharingFormula")}
+                          onBlur={() => setFocusedField(null)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400"
+                        >
+                          <option value="">Select sharing formula</option>
+                          <option value="50_50">50% / 50%</option>
+                          <option value="60_40">60% / 40%</option>
+                          <option value="70_30">70% / 30%</option>
+                        </select>
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                )}
 
                 {/* Description */}
                 <motion.div variants={itemVariants}>
