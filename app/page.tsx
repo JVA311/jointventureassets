@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { FiSearch, FiMapPin, FiChevronRight } from "react-icons/fi";
+import { FiSearch, FiMapPin, FiChevronRight, FiDollarSign, FiClock, FiUser, FiCalendar } from "react-icons/fi";
 import { useTypewriter, Cursor } from "react-simple-typewriter";
 import Path from "@/components/Path";
 import ThreeStepProcess from "@/components/ThreeStepProcess";
@@ -9,14 +9,45 @@ import { motion } from "framer-motion";
 
 import banner2 from "../assets/IMG-20251018-WA0010.jpg";
 import { useState } from "react";
+import axios from "axios";
 
 export default function Home() {
   const [listingType, setListingType] = useState('Sell');
+  const [searchText, setSearchText] = useState('');
+  const [results, setResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const [text] = useTypewriter({
     words: ["Innovation", "Capital & Vision" ],
     loop: 1,
     delaySpeed: 100,
   });
+
+  const handleSearch = async () => {
+    if (!searchText.trim()) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/search`, {
+        location: searchText.trim(),
+        type: listingType.toLowerCase(),
+      });
+
+      console.log(response.data.results)
+
+      setResults(response.data.results);
+    } catch (err: any) {
+      const message =
+        err.response?.data?.message || err.message || 'An error occurred while searching.';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <>
@@ -98,16 +129,6 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Property Type Input: flexible width (flex-1) */}
-          <div className="flex items-center gap-3 bg-white rounded-full border border-gray-200 px-4 py-3 shadow-inner flex-1 min-w-[180px] hover:border-yellow-400 transition-colors">
-            <FiMapPin className="text-yellow-500 text-lg shrink-0 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Property type"
-              className="flex-1 bg-transparent border-none outline-none text-gray-800 placeholder-gray-400 text-sm font-medium"
-            />
-          </div>
-
           {/* Location/Search Input: flexible width (flex-1) */}
           <div className="flex items-center gap-3 bg-white rounded-full border border-gray-200 px-4 py-3 shadow-inner flex-1 min-w-[200px] hover:border-yellow-400 transition-colors">
             <FiSearch className="text-yellow-500 text-lg shrink-0 w-5 h-5" />
@@ -115,30 +136,104 @@ export default function Home() {
               type="text"
               placeholder="Search by location"
               className="flex-1 bg-transparent border-none outline-none text-gray-800 placeholder-gray-400 text-sm font-medium"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
             />
           </div>
 
           {/* Search Button: full width on mobile, auto width on desktop, attention grabbing */}
           <button
-            className="bg-yellow-500 text-gray-900 px-6 py-3 rounded-full text-sm font-bold hover:bg-yellow-600 transition-all shadow-lg hover:shadow-xl w-full md:w-auto shrink-0 hover:cursor-pointer"
+            className="bg-yellow-500 text-gray-900 px-6 py-3 rounded-full text-sm font-bold hover:bg-yellow-600 transition-all shadow-lg hover:shadow-xl w-full md:w-auto shrink-0 hover:cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            onClick={handleSearch}
+            disabled={loading}
           >
-            Search
+            {loading ? 'Searching...' : 'Search'}
           </button>
         </div>
       </div>
     </div>
 
 
-              </motion.div>
+      </motion.div>
 
-            </div>
-          </div>
-        </section>
       </div>
+    </div>
+  </section>
+</div>
 
-      <Path />
-      <ThreeStepProcess />
-      <WhyJVA />
+      {/* Search Results Section */}
+      <section className="max-w-6xl mx-auto px-6 lg:px-24 py-8">
+        {error && (
+          <p className="text-red-500 text-sm mb-4">{error}</p>
+        )}
+
+        {results.length > 0 ? (
+          <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 space-y-4">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Search results
+            </h2>
+            <ul className="space-y-3">
+              {results.map((request: any) => (
+                <motion.div
+                  key={request._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                  >
+                  <div className="p-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Active
+                      </span>
+                    </div>
+  
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
+                      {request.title}
+                    </h3>
+  
+                    <p className="text-gray-600 mb-4 line-clamp-3">
+                      {request.description}
+                    </p>
+  
+                    <div className="space-y-3 mt-4">
+                      <div className="flex items-center text-sm text-gray-500">
+                        <FiDollarSign className="mr-2" />
+                        <span>Budget: {request.budget}</span>
+                      </div>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <FiMapPin className="mr-2" />
+                        <span>{request.location}</span>
+                      </div>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <FiClock className="mr-2" />
+                        <span>Duration: {request.timeline}</span>
+                      </div>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <FiUser className="mr-2" />
+                        <span>Posted by: {request.fullName}</span>
+                      </div>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <FiCalendar className="mr-2" />
+                        <span>
+                          {new Date(request.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  </motion.div>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <>
+        <Path />
+        <ThreeStepProcess />
+        <WhyJVA />
+        </>
+        )}
+      </section>
+
     </>
   );
 }

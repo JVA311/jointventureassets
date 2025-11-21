@@ -40,7 +40,7 @@ export default function RequestList({ requests, onViewDetails }: RequestListProp
     <div className="space-y-4">
       {requests.map((request) => (
         <motion.div
-          key={request.description}
+          key={request._id}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           whileHover={{ scale: 1.01 }}

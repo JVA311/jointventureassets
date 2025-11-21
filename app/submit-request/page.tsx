@@ -724,6 +724,11 @@ export default function SubmitRequestPage() {
 
                 {/* Submit Button */}
                 <motion.div variants={itemVariants} className="pt-2">
+                  {error && (
+                    <div className="mb-3 rounded-lg bg-red-50 border border-red-200 px-4 py-2 text-sm text-red-700">
+                      {error}
+                    </div>
+                  )}
                   <button
                     type="submit"
                     disabled={isSubmitting}

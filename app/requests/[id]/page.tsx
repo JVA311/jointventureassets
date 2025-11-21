@@ -3,11 +3,12 @@
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { FiArrowLeft, FiClock, FiCheckCircle, FiXCircle, FiEdit, FiTrash2 } from "react-icons/fi"
+import { FiArrowLeft, FiClock, FiCheckCircle, FiXCircle, FiEdit, FiTrash2, FiLoader } from "react-icons/fi"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import axios from "axios"
 import Link from "next/link"
+import { Spinner } from "@/components/Spinner"
 
 interface Request {
   _id: string
@@ -24,9 +25,44 @@ export default function RequestDetails() {
   console.log(id)
   const router = useRouter()
   const [request, setRequest] = useState<Request | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [success, setSuccess ] = useState("")
   const [error, setError] = useState<string | null>(null)
   const { token } = useSelector((state: RootState) => state.auth)
+
+  const handleDeleteRequest = async () => {
+    try {
+      setSuccess("")
+      setError("")
+      setIsDeleteLoading(true)
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_SERVER_URL}/request/delete`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      setIsDeleteLoading(false)
+      setError("")
+      setSuccess(response.data.message)
+      router.back()
+
+    } catch (error: unknown) {
+      setIsDeleteLoading(false)
+      setSuccess("")
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Something went wrong. Please try again.")
+        console.log(error)
+      } else {
+        setError("Something went wrong. Please try again.")
+      }
+
+      setTimeout(() => {
+        setError("")
+      }, 5000)
+    } finally {
+      setIsDeleteLoading(false)
+    }
+  }
 
   useEffect(() => {
     const fetchRequestDetails = async () => {
@@ -181,16 +217,23 @@ export default function RequestDetails() {
             <div className="flex justify-between">
               <button
                 type="button"
-                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 hover:cursor-pointer hover:bg-red-600 hover:text-white"
                 onClick={() => {
                   if (confirm('Are you sure you want to delete this request?')) {
                     // Handle delete
-                    console.log('Delete request:', request._id)
+                    handleDeleteRequest()
                   }
                 }}
               >
-                <FiTrash2 className="-ml-1 mr-2 h-5 w-5 text-gray-500" />
-                Delete
+                {isDeleteLoading ? (
+                  <Spinner />
+                
+                ): (
+                  <>
+                    <FiTrash2 className="-ml-1 mr-2 h-5 w-5 text-gray-500 hover:text-white" />
+                    Delete
+                  </>
+                )}
               </button>
               <div className="space-x-3">
                 <Link

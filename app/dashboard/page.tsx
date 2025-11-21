@@ -69,6 +69,7 @@ export default function Dashboard() {
           Authorization: `Bearer ${token}`
         }
       })
+      console.log(response.data)
       setRequests(response.data.data)
       setIsLoading(false)
     } catch (error) {
@@ -112,7 +113,7 @@ export default function Dashboard() {
   }
 
   const stats = {
-    myRequests: currentUser?.totalRequest || 0,
+    myRequests: requests.length || 0,
     active: currentUser?.matched || 0,
     matched: currentUser?.matched,
     availableMatches: currentUser?.availableMatches || 0,
