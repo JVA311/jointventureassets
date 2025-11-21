@@ -97,7 +97,7 @@ export default function EditRequestPage() {
       setTimeout(() => {
         router.push(`/requests/${id}`)
       }, 800)
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error updating request:", err)
       if (axios.isAxiosError(err)) {
         setError(

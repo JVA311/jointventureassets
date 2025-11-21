@@ -78,7 +78,7 @@ export default function VerifyOtp() {
       setError(null);
       
       // Replace with your actual API endpoint
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/password/otp/verify`, { 
+      await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/password/otp/verify`, { 
         email,
         otp: otpCode 
       });

@@ -35,7 +35,7 @@ export default function RequestDetails() {
     try {
       setError("")
       setIsDeleteLoading(true)
-      const response = await axios.delete(`${process.env.NEXT_PUBLIC_SERVER_URL}/request/delete`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_SERVER_URL}/request/delete`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
