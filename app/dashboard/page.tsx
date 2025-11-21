@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { FiPlus, FiTrendingUp, FiMessageSquare, FiEye, FiClock, FiCheckCircle, FiXCircle } from "react-icons/fi"
+import { FiPlus, FiTrendingUp, FiEye} from "react-icons/fi"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import { useRouter } from "next/navigation"

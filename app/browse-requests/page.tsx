@@ -15,7 +15,7 @@ import { useSearchRequests } from "@/hooks/useSearchRequests";
 import { Spinner } from "@/components/Spinner";
 
 export default function BrowseRequests() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const {

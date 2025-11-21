@@ -12,6 +12,9 @@ import { AppDispatch } from "@/store/store";
 import { Spinner } from "@/components/Spinner";
 import { signInWithGoogle } from "@/utils/oauth";
 
+import googleLogo from "@/assets/google.svg"
+import Image from "next/image";
+
 // Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -130,11 +133,6 @@ export default function Login() {
       ...formData,
       [e.target.name]: e.target.value,
     });
-  };
-
-  // Google Sign-In Handler
-  const handleGoogleLogin = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`;
   };
 
   return (
@@ -324,8 +322,8 @@ export default function Login() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
             >
-              <img
-                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              <Image
+                src={googleLogo}
                 alt="Google"
                 className="w-5 h-5"
               />
