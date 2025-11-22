@@ -386,7 +386,7 @@ export default function RegisterForm({ role = "Mandate", category = "" }: Regist
           </form>
 
           {/* Google Sign In */}
-          <motion.div
+          {/* <motion.div
             variants={itemVariants}
             className="mt-6"
             initial={{ opacity: 0 }}
@@ -408,7 +408,7 @@ export default function RegisterForm({ role = "Mandate", category = "" }: Regist
                 Continue with Google
               </span>
             </motion.button>
-          </motion.div>
+          </motion.div> */}
 
           {/* Sign In Link */}
           <motion.div
