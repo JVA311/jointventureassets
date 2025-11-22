@@ -9,6 +9,8 @@ import {
   FiClock,
   FiUser,
   FiCalendar,
+  FiCheckCircle,
+  FiXCircle,
 } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSearchRequests } from "@/hooks/useSearchRequests";
@@ -24,6 +26,32 @@ export default function BrowseRequests() {
     error,
     searchRequests,
   } = useSearchRequests();
+
+  const getStatusBadgeClasses = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "accepted":
+        return "bg-green-100 text-green-800";
+      case "rejected":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <FiClock className="mr-1 text-yellow-500" />;
+      case "accepted":
+        return <FiCheckCircle className="mr-1 text-green-500" />;
+      case "rejected":
+        return <FiXCircle className="mr-1 text-red-500" />;
+      default:
+        return <FiClock className="mr-1 text-gray-400" />;
+    }
+  };
 
   // Fetch all requests initially
   useEffect(() => {
@@ -154,8 +182,13 @@ export default function BrowseRequests() {
               >
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      Active
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeClasses(
+                        request.status
+                      )}`}
+                    >
+                      {getStatusIcon(request.status)}
+                      <span className="capitalize ml-1">{request.status}</span>
                     </span>
                   </div>
 

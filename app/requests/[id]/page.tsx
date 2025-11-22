@@ -98,6 +98,32 @@ export default function RequestDetails() {
     }
   }
 
+  const getStatusBadgeClasses = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'accepted':
+        return 'bg-green-100 text-green-800'
+      case 'rejected':
+        return 'bg-red-100 text-red-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const getStatusTextColor = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'text-yellow-700'
+      case 'accepted':
+        return 'text-green-700'
+      case 'rejected':
+        return 'text-red-700'
+      default:
+        return 'text-gray-700'
+    }
+  }
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -176,7 +202,7 @@ export default function RequestDetails() {
                   Created on {formatDate(request.createdAt)}
                 </p>
               </div>
-              <div className="flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+              <div className={`flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeClasses(request.status)}`}>
                 {getStatusIcon(request.status)}
                 <span className="ml-1 capitalize">{request.status}</span>
               </div>
@@ -194,7 +220,7 @@ export default function RequestDetails() {
                 <h4 className="text-sm font-medium text-gray-500">Status</h4>
                 <div className="mt-1 flex items-center">
                   {getStatusIcon(request.status)}
-                  <span className="ml-2 capitalize">{request.status}</span>
+                  <span className={`ml-2 capitalize ${getStatusTextColor(request.status)}`}>{request.status}</span>
                 </div>
               </div>
               <div>
@@ -246,17 +272,17 @@ export default function RequestDetails() {
         </motion.div>
 
         {/* Matches/Responses Section - Can be implemented later */}
-        <div className="mt-8">
+        {/* <div className="mt-8">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Responses</h3>
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:p-6">
               <p className="text-gray-500 text-center py-8">
                 No responses yet. Check back later for updates.
               </p>
-              {/* Responses list can be added here when the feature is implemented */}
+              
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   )

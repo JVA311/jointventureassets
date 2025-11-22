@@ -104,7 +104,6 @@ export default function Login() {
 
   const handleOAuth = async () => {
     try {
-      setLoading(true)
       setSuccessMsg("")
       const { accessToken } = await signInWithGoogle()
       const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`, {

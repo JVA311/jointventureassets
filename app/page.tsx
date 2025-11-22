@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { FiSearch, FiMapPin, FiChevronRight, FiDollarSign, FiClock, FiUser, FiCalendar } from "react-icons/fi";
+import { FiSearch, FiMapPin, FiChevronRight, FiDollarSign, FiClock, FiUser, FiCalendar, FiCheckCircle, FiXCircle } from "react-icons/fi";
 import { useTypewriter, Cursor } from "react-simple-typewriter";
 import Path from "@/components/Path";
 import ThreeStepProcess from "@/components/ThreeStepProcess";
@@ -22,6 +22,7 @@ interface IRequest {
   phoneNumber: string;
   email: string;
   createdAt: string;
+  status: "pending" | "accepted" | "rejected";
 }
 
 export default function Home() {
@@ -37,8 +38,34 @@ export default function Home() {
     delaySpeed: 100,
   });
 
+  const getStatusBadgeClasses = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "accepted":
+        return "bg-green-100 text-green-800";
+      case "rejected":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <FiClock className="mr-1 text-yellow-500" />;
+      case "accepted":
+        return <FiCheckCircle className="mr-1 text-green-500" />;
+      case "rejected":
+        return <FiXCircle className="mr-1 text-red-500" />;
+      default:
+        return <FiClock className="mr-1 text-gray-400" />;
+    }
+  };
+
   const handleSearch = async () => {
-    if (!searchText.trim()) return;
+    // if (!searchText.trim()) return;
 
     try {
       setLoading(true);
@@ -200,8 +227,13 @@ export default function Home() {
                   >
                   <div className="p-6">
                     <div className="flex justify-between items-start mb-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        Active
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeClasses(
+                          request.status,
+                        )}`}
+                      >
+                        {getStatusIcon(request.status)}
+                        <span className="capitalize ml-1">{request.status}</span>
                       </span>
                     </div>
   

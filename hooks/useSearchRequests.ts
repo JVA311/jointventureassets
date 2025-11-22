@@ -17,6 +17,7 @@ interface RequestItem {
   documents: string[];
   createdAt: string;
   updatedAt: string;
+  status: "pending" | "accepted" | "rejected";
 }
 
 interface UseSearchRequestsResult {
