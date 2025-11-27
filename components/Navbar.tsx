@@ -10,6 +10,9 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { isTokenExpired } from "@/utils/decodeToken";
 
+import Logo from "@/assets/logo/Untitled design.png"
+import Image from "next/image";
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -36,12 +39,13 @@ export default function Navbar() {
     <nav className="w-full bg-white shadow flex items-center px-4 sm:px-8 py-3 relative">
       {/* Logo */}
       <div className="flex items-center gap-2 flex-shrink-0">
-        <div className="bg-gray-900 text-white rounded-lg px-3 py-2 font-bold text-sm">
-          JVA
-        </div>
-        <span className="font-bold text-gray-900 text-lg">
-          Joint Venture Assets
-        </span>
+        <Image 
+          src={Logo} 
+          alt="logo" 
+          width={80} 
+          height={20}
+          className="h-full w-auto object-contain" 
+        />
       </div>
       {/* Centered Navigation Links */}
       <div className="hidden md:flex flex-1 justify-center items-center gap-10">
