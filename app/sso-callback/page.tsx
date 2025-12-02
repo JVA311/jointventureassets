@@ -5,7 +5,7 @@ export default function Page() {
   // or rendering the prebuilt <AuthenticateWithRedirectCallback/> component.
   return (
     <>
-      <AuthenticateWithRedirectCallback signInForceRedirectUrl="/dashboard" />
+      <AuthenticateWithRedirectCallback signInForceRedirectUrl="/" />
 
       {/* Required for sign-up flows
       Clerk's bot sign-up protection is enabled by default */}
