@@ -13,9 +13,6 @@ import RequestList from "@/components/dashboard/RequestList"
 import QuickActions from "@/components/dashboard/QuickActions"
 import axios from "axios"
 
-import { setCredentials } from "@/store/authSlice"
-import { useUser } from "@clerk/nextjs"
-
 interface UserStats {
   totalRequest: number
   matched: number

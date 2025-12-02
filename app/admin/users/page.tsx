@@ -1,4 +1,4 @@
-import { FiSearch, FiPlus, FiMoreHorizontal, FiUser, FiMail, FiShield, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+import { FiSearch, FiPlus, FiMoreHorizontal, FiUser, FiShield, FiCheckCircle, FiXCircle } from 'react-icons/fi';
 
 type UserStatus = 'active' | 'inactive' | 'suspended';
 type UserRole = 'admin' | 'user' | 'moderator';

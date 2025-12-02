@@ -99,33 +99,33 @@ export default function Login() {
     }
   };
 
-  const handleOAuth = async () => {
-    try {
-      setSuccessMsg("")
-      const { accessToken } = await signInWithGoogle()
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`, {
-        googleToken: accessToken
-      })
-      setLoading(false)
-      dispatch(
-        setCredentials({ user: response.data.user, token: response.data.token })
-      );
+  // const handleOAuth = async () => {
+  //   try {
+  //     setSuccessMsg("")
+  //     const { accessToken } = await signInWithGoogle()
+  //     const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`, {
+  //       googleToken: accessToken
+  //     })
+  //     setLoading(false)
+  //     dispatch(
+  //       setCredentials({ user: response.data.user, token: response.data.token })
+  //     );
 
-      router.push("/dashboard");
-      // console.log(resonse.data)
-    } catch (error: unknown) {
-      setLoading(false)
-      setSuccessMsg("")
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Something went wrong. Please try again.");
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-      console.log(error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  //     router.push("/dashboard");
+  //     // console.log(resonse.data)
+  //   } catch (error: unknown) {
+  //     setLoading(false)
+  //     setSuccessMsg("")
+  //     if (axios.isAxiosError(error)) {
+  //       setError(error.response?.data?.message || "Something went wrong. Please try again.");
+  //     } else {
+  //       setError("Something went wrong. Please try again.");
+  //     }
+  //     console.log(error)
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({

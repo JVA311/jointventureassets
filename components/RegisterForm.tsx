@@ -10,9 +10,6 @@ import { Spinner } from "./Spinner";
 import { AppDispatch } from "@/store/store";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/store/authSlice";
-import Image from "next/image";
-
-import googleLogo from "@/assets/google.svg"
 
 // Animation variants
 const containerVariants = {

@@ -11,8 +11,6 @@ import banner2 from "../assets/IMG-20251018-WA0010.jpg";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import { useUser } from "@clerk/nextjs"
-
 interface IRequest {
   _id: string;
   title: string;
