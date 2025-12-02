@@ -31,7 +31,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} antialiased`}
       >
-        <ClerkProvider>
+        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
           <StoreProvider>
           <ClerkReduxSync />
             <NavbarWrapper />
