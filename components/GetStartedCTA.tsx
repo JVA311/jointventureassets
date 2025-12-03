@@ -7,13 +7,13 @@ export default function GetStartedCTA() {
       </p>
       <div className="flex flex-col sm:flex-row gap-4">
         <a
-          href="#get-started"
+          href="/register"
           className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-6 py-3 rounded-lg shadow transition-colors flex items-center justify-center"
         >
           Start Your Journey &rarr;
         </a>
         <a
-          href="#consultation"
+          href="/contact"
           className="bg-white border border-gray-300 hover:bg-gray-900 hover:text-white text-gray-900 font-semibold px-6 py-3 rounded-lg shadow transition-colors flex items-center justify-center"
         >
           Book Consultation

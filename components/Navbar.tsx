@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { isTokenExpired } from "@/utils/decodeToken";
 import { useClerk } from "@clerk/nextjs";
 
-import Logo from "@/assets/logo/Untitled design.png"
+import Logo from "@/assets/logo/jva_2-removebg-preview.png"
 import Image from "next/image";
 
 export default function Navbar() {
@@ -33,10 +33,15 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    if (!token || isTokenExpired(token)) {
-      dispatch(logout());
-      // router.push("/login");
-    }
+    const checkAuth = async () => {
+      if (!token || isTokenExpired(token)) {
+        dispatch(logout());
+        await signOut();
+        // router.push("/login");
+      }
+    };
+    
+    checkAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token])
 

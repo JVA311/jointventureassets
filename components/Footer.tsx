@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import logo from "@/assets/logo/jva_1-removebg-preview (1).png"
+import logo from "@/assets/logo/jva_2-removebg-preview.png"
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 

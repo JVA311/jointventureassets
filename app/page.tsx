@@ -8,7 +8,7 @@ import WhyJVA from "@/components/WhyJVA";
 import { motion } from "framer-motion";
 
 import banner2 from "../assets/IMG-20251018-WA0010.jpg";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 interface IRequest {
@@ -92,11 +92,6 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    
-      
-    
-  }, [])
   return (
     <>
       <div className="w-full">
