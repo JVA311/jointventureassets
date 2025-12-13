@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { hasCookie, setCookie } from "cookies-next";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX } from "react-icons/fi";
+import { FiX } from "react-icons/fi"
 
 export default function CookieConsentBanner() {
   const [showBanner, setShowBanner] = useState(false);
