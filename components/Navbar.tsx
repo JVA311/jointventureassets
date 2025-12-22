@@ -9,7 +9,8 @@ import { logout } from "@/store/authSlice";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { isTokenExpired } from "@/utils/decodeToken";
-import { useClerk } from "@clerk/nextjs";
+import { Toaster } from "react-hot-toast"
+import { signOut } from "next-auth/react"
 
 import Logo from "@/assets/logo/jva_2-removebg-preview.png"
 import Image from "next/image";
@@ -21,23 +22,21 @@ export default function Navbar() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const pathname = usePathname();
-  const { signOut } = useClerk()
 
   const handleLogout = async () => {
+    await signOut({ redirect: false })
     dispatch(logout());
-    await signOut({
-      redirectUrl: "/",
-    })
     router.push("/");
     setUserMenuOpen(false);
   };
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (!token || isTokenExpired(token)) {
+      if (!token) return 
+
+      if (isTokenExpired(token)) {
         dispatch(logout());
-        await signOut();
-        // router.push("/login");
+        await signOut({ redirect: false })
       }
     };
     
@@ -227,6 +226,7 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+      <Toaster />
     </nav>
   );
 }

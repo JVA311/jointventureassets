@@ -5,10 +5,9 @@ import NavbarWrapper from "@/components/NavbarWrapper";
 import FooterWrapper from "@/components/FooterWrapper";
 import StoreProvider from "@/store/StoreProvider";
 import WhatsAppButton from "@/components/WhatsAppButton";
-
-import { ClerkProvider } from "@clerk/nextjs"
-import ClerkReduxSync from "@/components/ClerkReduxSync";
+import AuthSync from "@/components/AuthSync";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
+import AuthProvider from "@/components/AuthProvider";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,16 +31,16 @@ export default function RootLayout({
       <body
         className={`${inter.variable} antialiased`}
       >
-        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
-          <StoreProvider>
-          <ClerkReduxSync />
-            <NavbarWrapper />
-            {children}
-            <CookieConsentBanner />
-            <FooterWrapper />
-            <WhatsAppButton />
-          </StoreProvider>
-        </ClerkProvider>
+        <StoreProvider>
+          <AuthProvider>
+            <AuthSync />
+              <NavbarWrapper />
+              {children}
+              <CookieConsentBanner />
+              <FooterWrapper />
+              <WhatsAppButton />
+          </AuthProvider>
+        </StoreProvider>
       </body>
     </html>
   );

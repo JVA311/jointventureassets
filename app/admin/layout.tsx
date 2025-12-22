@@ -9,29 +9,37 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar with toggle functionality */}
       <div
         className={`
-          ${isSidebarOpen ? 'w-64' : 'w-0'}
-          transition-all duration-300 ease-in-out
-          overflow-hidden
+          fixed inset-y-0 left-0 z-50 w-64 bg-white border-r transform transition-transform duration-300 ease-in-out
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:relative md:translate-x-0 md:block
         `}
       >
         <Sidebar />
       </div>
 
+      {/* Overlay for mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Main content area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden md:ml-0">
         {/* Top bar with toggle button */}
         <header className="bg-white shadow-sm">
-          <div className="px-4 py-3">
+          <div className="px-4 py-3 flex items-center">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2 rounded-md text-gray-500 hover:bg-gray-100"
+              className="p-2 rounded-md text-gray-500 hover:bg-gray-100 md:hidden"
             >
               <FiMenu className="h-5 w-5" />
             </button>

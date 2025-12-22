@@ -52,7 +52,7 @@ export default function UsersPage() {
   const getRoleBadge = (role: UserRole) => {
     const roleMap = {
       admin: { bg: 'bg-purple-100 text-purple-800', icon: FiShield },
-      user: { bg: 'bg-blue-100 text-blue-800', icon: FiUser },
+      user: { bg: 'bg-yellow-100 text-yellow-800', icon: FiUser },
       moderator: { bg: 'bg-yellow-100 text-yellow-800', icon: FiShield },
     };
     
@@ -78,10 +78,10 @@ export default function UsersPage() {
             <input
               type="search"
               placeholder="Search users..."
-              className="pl-8 pr-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="pl-8 pr-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
             />
           </div>
-          <button className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">
+          <button className="flex items-center gap-2 px-3 py-2 bg-yellow-600 text-white rounded-lg text-sm font-medium hover:bg-yellow-700">
             <FiPlus className="h-4 w-4" />
             Add User
           </button>
