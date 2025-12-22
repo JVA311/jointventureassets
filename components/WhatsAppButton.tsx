@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import { FaWhatsapp } from 'react-icons/fa';
-import { useState } from 'react';
 
 export default function WhatsAppButton() {
   // const [isHovered, setIsHovered] = useState(false);
