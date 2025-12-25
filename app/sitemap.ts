@@ -6,6 +6,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: 'https://www.jointventureassets.com/',
       lastModified: new Date(),
     },
+    {
+      url: 'https://www.jointventureassets.com/contact',
+      lastModified: new Date(),
+    }
     // add more URLs here
   ];
 }
