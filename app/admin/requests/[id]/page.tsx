@@ -12,7 +12,6 @@ import {
   FiCalendar, 
   FiDollarSign, 
   FiUser, 
-  FiTag, 
   FiMapPin, 
   FiClock,
   FiCheck,
@@ -23,17 +22,6 @@ import {
   FiClock as FiTimeline
 } from 'react-icons/fi';
 import Image from 'next/image';
-
-interface Document {
-  id: string;
-  url: string;
-  type: string;
-  name: string;
-  size: number;
-  createdAt: Date;
-  updatedAt: Date;
-  requestId: string;
-}
 
 interface Request {
   id: string;
@@ -60,7 +48,7 @@ const statusConfig = {
     text: 'text-yellow-700',
     border: 'border-yellow-100'
   },
-  approved: {
+  accepted: {
     icon: <FiCheck className="h-4 w-4" />,
     bg: 'bg-green-50',
     text: 'text-green-700',
@@ -78,8 +66,10 @@ export default function RequestDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
   const [request, setRequest] = useState<Request | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [approvedLoading, setApprovedLoading] = useState(false);
+  const [rejectedLoading, setRejectedLoading] = useState(false);
   const { token } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
@@ -101,9 +91,7 @@ export default function RequestDetailsPage() {
           }
         );
         setRequest(response.data.data);
-        console.log(response.data.data)
       } catch (error) {
-        console.error('Error fetching request:', error);
         toast.error('Failed to load request details');
       } finally {
         setLoading(false);
@@ -113,7 +101,7 @@ export default function RequestDetailsPage() {
     fetchRequest();
   }, []);
 
-  const handleStatusUpdate = async (newStatus: 'approved' | 'rejected') => {
+  const handleApprove = async () => {
     if (!token) {
       toast.error('Authentication required');
       return;
@@ -121,26 +109,63 @@ export default function RequestDetailsPage() {
 
     try {
       setUpdating(true);
-      await axios.patch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/admin/requests/${id}`,
-        { status: newStatus },
+      setApprovedLoading(true)
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/admin/requests/approve/${id}`,{},
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
           },
         }
       );
       
-      setRequest(prev => prev ? { ...prev, status: newStatus } : null);
-      toast.success(`Request ${newStatus} successfully`);
-    } catch (error) {
-      console.error('Error updating request status:', error);
+      setUpdating(false)
+      setApprovedLoading(false)
+      setRequest(prev => prev ? { ...prev!, status: "approved" } : null);
+      toast.success(response.data.message);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setUpdating(false)
+        toast.error(error.response?.data.message);
+      }
       toast.error('Failed to update request status');
     } finally {
       setUpdating(false);
     }
   };
+
+  const handleReject = async () => {
+    if (!token) {
+      toast.error('Authentication required');
+      return;
+    }
+
+    try {
+      setUpdating(true);
+      setRejectedLoading(true)
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/admin/requests/reject/${id}`,{},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      setUpdating(false)
+      setRejectedLoading(false)
+      setRequest(prev => prev ? { ...prev!, status: "rejected" } : null);
+      toast.success(response.data.message);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setUpdating(false)
+        toast.error(error.response?.data.message);
+      }
+      toast.error('Failed to update request status');
+    } finally {
+      setUpdating(false);
+    }
+  }
 
   if (loading) {
     return (
@@ -164,7 +189,9 @@ export default function RequestDetailsPage() {
     );
   }
 
-  const validStatus = ['pending', 'approved', 'rejected'].includes(request.status) ? request.status : 'pending';
+  const validStatus = ['pending', 'accepted', 'rejected'].includes(request.status) 
+  ? request.status as 'pending' | 'accepted' | 'rejected' 
+  : 'pending';
 
   const status = statusConfig[validStatus];
 
@@ -308,19 +335,19 @@ export default function RequestDetailsPage() {
             <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end space-x-3">
               <button
                 type="button"
-                onClick={() => handleStatusUpdate('rejected')}
+                onClick={() => handleReject()}
                 disabled={updating}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-red-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 hover:cursor-pointer disabled:opacity-50"
               >
-                {updating ? 'Updating...' : 'Reject'}
+                {rejectedLoading ? <Spinner /> : 'Reject'}
               </button>
               <button
                 type="button"
-                onClick={() => handleStatusUpdate('approved')}
+                onClick={() => handleApprove()}
                 disabled={updating}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50"
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50 hover:cursor-pointer"
               >
-                {updating ? 'Updating...' : 'Approve'}
+                {approvedLoading ? <Spinner /> : 'Accept'}
               </button>
             </div>
           )}

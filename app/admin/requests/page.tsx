@@ -10,7 +10,7 @@ interface Request {
   _id: string;
   title: string;
   description: string;
-  status: 'pending' | 'approved' | 'rejected';
+  status: 'pending' | 'accepted' | 'rejected';
   requestType: string;
   developmentType: string;
   budget: string;
@@ -27,7 +27,7 @@ interface Request {
 export default function RequestsPage() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [filter, setFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>('all');
   const { token } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function RequestsPage() {
           >
             <option value="all">All Requests</option>
             <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
+            <option value="accepted">Accepted</option>
             <option value="rejected">Rejected</option>
           </select>
         </div>

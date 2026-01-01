@@ -18,7 +18,7 @@ import {
 interface RequestItemProps {
   id: string;
   title: string;
-  status: 'pending' | 'approved' | 'rejected';
+  status: 'pending' | 'accepted' | 'rejected';
   requestType: string;
   createdAt: string;
   budget?: number;
@@ -33,7 +33,7 @@ const statusConfig = {
     border: 'border-yellow-100',
     ring: 'ring-yellow-100'
   },
-  approved: {
+  accepted: {
     icon: <FiCheck className="h-3.5 w-3.5" />,
     bg: 'bg-green-50',
     text: 'text-green-700',
@@ -68,7 +68,7 @@ export const RequestItem = ({
   fullName
 }: RequestItemProps) => {
   // Ensure status is valid, default to 'pending' if not
-  const validStatus = ['pending', 'approved', 'rejected'].includes(status) ? status : 'pending';
+  const validStatus = ['pending', 'accepted', 'rejected'].includes(status) ? status : 'pending';
   const config = statusConfig[validStatus];
   return (
     <motion.li
