@@ -1,0 +1,10 @@
+# Allow all web crawlers to access all pages
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.jointventureassets.com/sitemap.xml
+
+# Disallow admin and API routes
+Disallow: /admin/
+Disallow: /api/
