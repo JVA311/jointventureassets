@@ -684,6 +684,7 @@ export default function SubmitRequestPage() {
                             name="document"
                             type="file"
                             multiple
+                            accept="image/*"
                             className="sr-only"
                             onChange={handleFileChange}
                           />
