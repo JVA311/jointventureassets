@@ -17,7 +17,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "jointventureassets.com",
+  title: "Joint Venture Assets | Real Estate & Investment Partnerships",
 };
 
 export default function RootLayout({
@@ -27,6 +27,24 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script 
+          type="application/ld+json"
+           dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Joint Venture Assets",
+              url: "https://www.jointventureassets.com",
+              logo: "https://www.jointventureassets.com/logo.png",
+              sameAs: [
+                "https://www.linkedin.com/company/jointventureassets",
+                "https://www.facebook.com/profile.php?id=61585879203670",
+              ],
+            })
+          }}
+        />
+      </head>
       <body
         className={`${inter.variable} antialiased`}
       >
